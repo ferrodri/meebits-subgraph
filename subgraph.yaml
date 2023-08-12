@@ -1,0 +1,51 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Meebits
+    network: mainnet
+    source:
+      address: "0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7"
+      abi: Meebits
+      startBlock: 12358080
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - Approval
+        - ApprovalForAll
+        - CommunityGrantEnds
+        - Deposit
+        - Mint
+        - OfferCancelled
+        - SaleBegins
+        - Trade
+        - Transfer
+        - Withdraw
+      abis:
+        - name: Meebits
+          file: ./abis/Meebits.json
+      eventHandlers:
+        - event: Approval(indexed address,indexed address,indexed uint256)
+          handler: handleApproval
+        - event: ApprovalForAll(indexed address,indexed address,bool)
+          handler: handleApprovalForAll
+        - event: CommunityGrantEnds()
+          handler: handleCommunityGrantEnds
+        - event: Deposit(indexed address,uint256)
+          handler: handleDeposit
+        - event: Mint(indexed uint256,indexed address,uint256)
+          handler: handleMint
+        - event: OfferCancelled(bytes32)
+          handler: handleOfferCancelled
+        - event: SaleBegins()
+          handler: handleSaleBegins
+        - event: Trade(indexed bytes32,indexed address,address,uint256,uint256[],uint256,uint256[])
+          handler: handleTrade
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
+        - event: Withdraw(indexed address,uint256)
+          handler: handleWithdraw
+      file: ./src/meebits.ts

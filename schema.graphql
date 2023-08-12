@@ -1,0 +1,95 @@
+type Approval @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  approved: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type ApprovalForAll @entity(immutable: true) {
+  id: Bytes!
+  owner: Bytes! # address
+  operator: Bytes! # address
+  approved: Boolean! # bool
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type CommunityGrantEnds @entity(immutable: true) {
+  id: Bytes!
+
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Deposit @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Mint @entity(immutable: true) {
+  id: Bytes!
+  index: BigInt! # uint256
+  minter: Bytes! # address
+  createdVia: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type OfferCancelled @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes! # bytes32
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type SaleBegins @entity(immutable: true) {
+  id: Bytes!
+
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Trade @entity(immutable: true) {
+  id: Bytes!
+  hash: Bytes! # bytes32
+  maker: Bytes! # address
+  taker: Bytes! # address
+  makerWei: BigInt! # uint256
+  makerIds: [BigInt!]! # uint256[]
+  takerWei: BigInt! # uint256
+  takerIds: [BigInt!]! # uint256[]
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Transfer @entity(immutable: true) {
+  id: Bytes!
+  from: Bytes! # address
+  to: Bytes! # address
+  tokenId: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
+
+type Withdraw @entity(immutable: true) {
+  id: Bytes!
+  account: Bytes! # address
+  amount: BigInt! # uint256
+  blockNumber: BigInt!
+  blockTimestamp: BigInt!
+  transactionHash: Bytes!
+}
