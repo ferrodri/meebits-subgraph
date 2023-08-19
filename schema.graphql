@@ -15,7 +15,7 @@ type Meebit @entity {
     cryptopunksOfMinter: BigInt!
 
     "Historic owners of this meebit"
-    historicOwners: [AccountMeebit!]! @derivedFrom(field: "historicMeebit")
+    historicAccounts: [AccountMeebit!]! @derivedFrom(field: "historicMeebit")
 
     "The original minter of the Meebit"
     minter: Account!

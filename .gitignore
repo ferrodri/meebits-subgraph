@@ -3,4 +3,3 @@ node_modules/
 src/types
 generated/
 .DS_Store
-tests/.bin/meebits.wasm

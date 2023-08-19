@@ -18,6 +18,7 @@ export function handleMint(event: Mint): void {
     let account = Account.load(accountId);
     if (!account) {
         account = new Account(accountId);
+        account.save();
     }
 
     // Create meebit
@@ -37,7 +38,6 @@ export function handleMint(event: Mint): void {
                 : 'PublicSale';
 
     meebit.save();
-    account.save();
 }
 
 export function handleTransfer(event: Transfer): void {
@@ -48,6 +48,7 @@ export function handleTransfer(event: Transfer): void {
     let account = Account.load(accountId);
     if (!account) {
         account = new Account(accountId);
+        account.save();
     }
 
     let accountMeebit = new AccountMeebit(account.id.concat(meebitId));
