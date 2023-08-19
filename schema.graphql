@@ -1,6 +1,5 @@
 enum MintedVia {
     PublicSale
-    DevMint
     Autoglyphs
     Cryptopunks
 }
