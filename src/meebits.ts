@@ -1,168 +1,81 @@
-import {
-  Approval as ApprovalEvent,
-  ApprovalForAll as ApprovalForAllEvent,
-  CommunityGrantEnds as CommunityGrantEndsEvent,
-  Deposit as DepositEvent,
-  Mint as MintEvent,
-  OfferCancelled as OfferCancelledEvent,
-  SaleBegins as SaleBeginsEvent,
-  Trade as TradeEvent,
-  Transfer as TransferEvent,
-  Withdraw as WithdrawEvent
-} from "../generated/Meebits/Meebits"
-import {
-  Approval,
-  ApprovalForAll,
-  CommunityGrantEnds,
-  Deposit,
-  Mint,
-  OfferCancelled,
-  SaleBegins,
-  Trade,
-  Transfer,
-  Withdraw
-} from "../generated/schema"
+import { Mint } from '../generated/Meebits/Meebits';
+import { Account, Meebit } from '../generated/schema';
 
-export function handleApproval(event: ApprovalEvent): void {
-  let entity = new Approval(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.approved = event.params.approved
-  entity.tokenId = event.params.tokenId
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+export function handleMint(event: Mint): void {
+    const mintedVia = parseInt(event.params.createdVia.toString());
+    const accountId = event.params.minter.toHexString();
 
-  entity.save()
+    // Look for existing account or create it
+    let account = Account.load(accountId);
+    if (!account) {
+        account = new Account(event.params.minter.toHexString());
+    }
+
+    // Create meebit
+    const meebit = new Meebit(event.params.index.toString());
+    meebit.minter = account.id;
+    meebit.blockNumber = event.block.number;
+    meebit.blockTimestamp = event.block.timestamp;
+    meebit.transactionHash = event.transaction.hash;
+
+    meebit.mintedVia =
+        mintedVia > 0 && mintedVia <= 10000
+            ? 'Cryptopunks'
+            : mintedVia > 10000 && mintedVia <= 10512
+                ? 'Autoglyphs'
+                : 'PublicSale';
+
+    meebit.save();
+    account.save();
+    //
+    // let contract = Contract.bind(event.address)
+    //
+    // The following functions can then be called on this contract to access
+    // state variables and other data:
+    //
+    // - contract.SALE_LIMIT(...)
+    // - contract.TOKEN_LIMIT(...)
+    // - contract.balanceOf(...)
+    // - contract.cancelledOffers(...)
+    // - contract.communityGrant(...)
+    // - contract.contentHash(...)
+    // - contract.contractSealed(...)
+    // - contract.creatorNftMints(...)
+    // - contract.ethBalance(...)
+    // - contract.getApproved(...)
+    // - contract.getPrice(...)
+    // - contract.hashToSign(...)
+    // - contract.isApprovedForAll(...)
+    // - contract.marketPaused(...)
+    // - contract.mintWithPunkOrGlyph(...)
+    // - contract.mintsRemaining(...)
+    // - contract.name(...)
+    // - contract.ownerOf(...)
+    // - contract.publicSale(...)
+    // - contract.saleDuration(...)
+    // - contract.saleStartTime(...)
+    // - contract.supportsInterface(...)
+    // - contract.symbol(...)
+    // - contract.tokenByIndex(...)
+    // - contract.tokenOfOwnerByIndex(...)
+    // - contract.tokenURI(...)
+    // - contract.totalSupply(...)
+    // - contract.tradeValid(...)
 }
 
-export function handleApprovalForAll(event: ApprovalForAllEvent): void {
-  let entity = new ApprovalForAll(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.owner = event.params.owner
-  entity.operator = event.params.operator
-  entity.approved = event.params.approved
+// export function handleApprovalForAll(event: ApprovalForAll): void { }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+// export function handleCommunityGrantEnds(event: CommunityGrantEnds): void { }
 
-  entity.save()
-}
+// export function handleDeposit(event: Deposit): void { }
 
-export function handleCommunityGrantEnds(event: CommunityGrantEndsEvent): void {
-  let entity = new CommunityGrantEnds(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
+// export function handleOfferCancelled(event: OfferCancelled): void { }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
+// export function handleSaleBegins(event: SaleBegins): void { }
 
-  entity.save()
-}
+// export function handleTrade(event: Trade): void { }
 
-export function handleDeposit(event: DepositEvent): void {
-  let entity = new Deposit(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
-  entity.amount = event.params.amount
+// export function handleTransfer(event: Transfer): void { }
 
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleMint(event: MintEvent): void {
-  let entity = new Mint(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.index = event.params.index
-  entity.minter = event.params.minter
-  entity.createdVia = event.params.createdVia
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleOfferCancelled(event: OfferCancelledEvent): void {
-  let entity = new OfferCancelled(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.hash = event.params.hash
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleSaleBegins(event: SaleBeginsEvent): void {
-  let entity = new SaleBegins(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleTrade(event: TradeEvent): void {
-  let entity = new Trade(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.hash = event.params.hash
-  entity.maker = event.params.maker
-  entity.taker = event.params.taker
-  entity.makerWei = event.params.makerWei
-  entity.makerIds = event.params.makerIds
-  entity.takerWei = event.params.takerWei
-  entity.takerIds = event.params.takerIds
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleTransfer(event: TransferEvent): void {
-  let entity = new Transfer(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.from = event.params.from
-  entity.to = event.params.to
-  entity.tokenId = event.params.tokenId
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
-
-export function handleWithdraw(event: WithdrawEvent): void {
-  let entity = new Withdraw(
-    event.transaction.hash.concatI32(event.logIndex.toI32())
-  )
-  entity.account = event.params.account
-  entity.amount = event.params.amount
-
-  entity.blockNumber = event.block.number
-  entity.blockTimestamp = event.block.timestamp
-  entity.transactionHash = event.transaction.hash
-
-  entity.save()
-}
+// export function handleWithdraw(event: Withdraw): void { }

@@ -1,62 +1,50 @@
+import { Address, BigInt } from '@graphprotocol/graph-ts';
 import {
-  assert,
-  describe,
-  test,
-  clearStore,
-  beforeAll,
-  afterAll
-} from "matchstick-as/assembly/index"
-import { Address, BigInt, Bytes } from "@graphprotocol/graph-ts"
-import { Approval } from "../generated/schema"
-import { Approval as ApprovalEvent } from "../generated/Meebits/Meebits"
-import { handleApproval } from "../src/meebits"
-import { createApprovalEvent } from "./meebits-utils"
+    afterEach,
+    assert,
+    beforeEach,
+    clearStore,
+    describe,
+    test,
+} from 'matchstick-as/assembly/index';
+import { handleMint } from '../src/meebits';
+import { createMintEvent } from './meebits-utils';
 
-// Tests structure (matchstick-as >=0.5.0)
-// https://thegraph.com/docs/en/developer/matchstick/#tests-structure-0-5-0
+const meebitId = 1;
+const minterAddress = '0x0000000000000000000000000000000000000001';
+const createdViaPublicSale = 0;
 
-describe("Describe entity assertions", () => {
-  beforeAll(() => {
-    let owner = Address.fromString("0x0000000000000000000000000000000000000001")
-    let approved = Address.fromString(
-      "0x0000000000000000000000000000000000000001"
-    )
-    let tokenId = BigInt.fromI32(234)
-    let newApprovalEvent = createApprovalEvent(owner, approved, tokenId)
-    handleApproval(newApprovalEvent)
-  })
 
-  afterAll(() => {
-    clearStore()
-  })
+describe('handleMintMeebit', () => {
+    beforeEach(() => {
+        const newMintEvent = createMintEvent(
+            BigInt.fromI32(meebitId),
+            Address.fromString(minterAddress),
+            BigInt.fromI32(createdViaPublicSale)
+        );
+        handleMint(newMintEvent);
+    });
 
-  // For more test scenarios, see:
-  // https://thegraph.com/docs/en/developer/matchstick/#write-a-unit-test
+    afterEach(() => {
+        clearStore();
+    });
 
-  test("Approval created and stored", () => {
-    assert.entityCount("Approval", 1)
+    test('Meebit created and stored', () => {
+        assert.entityCount('Meebit', 1);
+        assert.fieldEquals('Meebit', meebitId.toString(), 'minter', '0x0000000000000000000000000000000000000001');
+        assert.fieldEquals('Meebit', meebitId.toString(), 'mintedVia', 'PublicSale');
+    });
 
-    // 0xa16081f360e3847006db660bae1c6d1b2e17ec2a is the default address used in newMockEvent() function
-    assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "owner",
-      "0x0000000000000000000000000000000000000001"
-    )
-    assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "approved",
-      "0x0000000000000000000000000000000000000001"
-    )
-    assert.fieldEquals(
-      "Approval",
-      "0xa16081f360e3847006db660bae1c6d1b2e17ec2a-1",
-      "tokenId",
-      "234"
-    )
-
-    // More assert options:
-    // https://thegraph.com/docs/en/developer/matchstick/#asserts
-  })
-})
+    test('Additional Meebit minted by same account created and stored', () => {
+        assert.entityCount('Account', 1);
+        assert.entityCount('Meebit', 1);
+        const extraMint = createMintEvent(
+            BigInt.fromI32(2),
+            Address.fromString(minterAddress),
+            BigInt.fromI32(createdViaPublicSale)
+        );
+        handleMint(extraMint);
+        assert.entityCount('Account', 1);
+        assert.entityCount('Meebit', 2);
+    });
+});

@@ -1,18 +1,26 @@
 {
-  "name": "meebits-subgraph",
-  "license": "UNLICENSED",
-  "scripts": {
-    "codegen": "graph codegen",
-    "build": "graph build",
-    "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ meebits-subgraph",
-    "create-local": "graph create --node http://localhost:8020/ meebits-subgraph",
-    "remove-local": "graph remove --node http://localhost:8020/ meebits-subgraph",
-    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 meebits-subgraph",
-    "test": "graph test"
-  },
-  "dependencies": {
-    "@graphprotocol/graph-cli": "0.49.0",
-    "@graphprotocol/graph-ts": "0.29.1"
-  },
-  "devDependencies": { "matchstick-as": "0.5.0" }
+    "name": "meebits-subgraph",
+    "license": "UNLICENSED",
+    "scripts": {
+        "codegen": "graph codegen",
+        "build": "graph build",
+        "deploy": "graph deploy --node https://api.studio.thegraph.com/deploy/ meebits-subgraph",
+        "create-local": "graph create --node http://localhost:8020/ meebits-subgraph",
+        "remove-local": "graph remove --node http://localhost:8020/ meebits-subgraph",
+        "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 meebits-subgraph",
+        "test": "graph test",
+        "prettier": "prettier --write ."
+    },
+    "dependencies": {
+        "@graphprotocol/graph-cli": "0.51.0",
+        "@graphprotocol/graph-ts": "0.31.0"
+    },
+    "devDependencies": {
+        "@typescript-eslint/eslint-plugin": "3.3.0",
+        "@typescript-eslint/parser": "3.3.0",
+        "eslint": "7.2.0",
+        "eslint-config-prettier": "8.6.0",
+        "matchstick-as": "0.5.0",
+        "prettier": "2.0.5"
+    }
 }

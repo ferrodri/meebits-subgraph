@@ -1,8 +1,8 @@
 {
-  "mainnet": {
-    "Meebits": {
-      "address": "0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7",
-      "startBlock": 12358080
+    "mainnet": {
+        "Meebits": {
+            "address": "0x7Bd29408f11D2bFC23c34f18275bBf23bB716Bc7",
+            "startBlock": 12358080
+        }
     }
-  }
 }
