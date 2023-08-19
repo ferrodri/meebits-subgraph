@@ -26,4 +26,6 @@ dataSources:
           eventHandlers:
               - event: Mint(indexed uint256,indexed address,uint256)
                 handler: handleMint
+              - event: Transfer(indexed address,indexed address,indexed uint256)
+                handler: handleTransfer
           file: ./src/meebits.ts

@@ -1,8 +1,8 @@
 import { Address } from '@graphprotocol/graph-ts';
 import { Autoglyphs } from '../generated/Meebits/Autoglyphs';
 import { CryptoPunksMarket } from '../generated/Meebits/CryptoPunksMarket';
-import { Mint } from '../generated/Meebits/Meebits';
-import { Account, Meebit } from '../generated/schema';
+import { Mint, Transfer } from '../generated/Meebits/Meebits';
+import { Account, AccountMeebit, Meebit } from '../generated/schema';
 
 
 export function handleMint(event: Mint): void {
@@ -12,16 +12,16 @@ export function handleMint(event: Mint): void {
     const cryptopunksContract = CryptoPunksMarket.bind(cryptoPunksAddress);
 
     const mintedVia = parseInt(event.params.createdVia.toString());
-    const accountAddress = event.params.minter.toHexString();
+    const accountId = event.params.minter.toHexString();
 
     // Look for existing account or create it
-    let account = Account.load(accountAddress);
+    let account = Account.load(accountId);
     if (!account) {
-        account = new Account(event.params.minter.toHexString());
+        account = new Account(accountId);
     }
 
     // Create meebit
-    const meebit = new Meebit(event.params.index.toString());
+    let meebit = new Meebit(event.params.index.toString());
     meebit.autoglyphsOfMinter = autoglyphsContract.balanceOf(event.params.minter);
     meebit.cryptopunksOfMinter = cryptopunksContract.balanceOf(event.params.minter);
     meebit.minter = account.id;
@@ -38,4 +38,22 @@ export function handleMint(event: Mint): void {
 
     meebit.save();
     account.save();
+}
+
+export function handleTransfer(event: Transfer): void {
+    const accountId = event.params.to.toHexString();
+    const meebitId = event.params.tokenId.toString();
+
+    // Look for existing account or create it
+    let account = Account.load(accountId);
+    if (!account) {
+        account = new Account(accountId);
+    }
+
+    let accountMeebit = new AccountMeebit(account.id.concat(meebitId));
+
+    accountMeebit.historicAccount = account.id;
+    accountMeebit.historicMeebit = meebitId;
+
+    accountMeebit.save();
 }

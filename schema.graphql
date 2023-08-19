@@ -14,6 +14,9 @@ type Meebit @entity {
     "How many cryptopunks the minter had when minting. Not checking wrapped cryptopunks since you needed the actual punk when minting"
     cryptopunksOfMinter: BigInt!
 
+    "Historic owners of this meebit"
+    historicOwners: [AccountMeebit!]! @derivedFrom(field: "historicMeebit")
+
     "The original minter of the Meebit"
     minter: Account!
 
@@ -29,6 +32,16 @@ type Account @entity {
     "Blockchain address."
     id: ID!
 
+    "Historic meebits of this account"
+    historicMeebits: [AccountMeebit!]! @derivedFrom(field: "historicAccount")
+
     "Meebits minted by this address"
-    meebitsMinted: [Meebit!]! @derivedFrom(field: "minter")
+    meebitsMinted: [Meebit!] @derivedFrom(field: "minter")
+}
+
+type AccountMeebit @entity {
+    "account.id.concat(meebit.id)"
+    id: ID!
+    historicAccount: Account!
+    historicMeebit: Meebit!
 }
