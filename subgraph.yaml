@@ -17,10 +17,12 @@ dataSources:
               - Account
               - Meebit
           abis:
-              - name: Meebits
-                file: ./abis/Meebits.json
+              - name: Autoglyphs
+                file: ./abis/Autoglyphs.json
               - name: CryptoPunksMarket
                 file: ./abis/CryptoPunksMarket.json
+              - name: Meebits
+                file: ./abis/Meebits.json
           eventHandlers:
               - event: Mint(indexed uint256,indexed address,uint256)
                 handler: handleMint

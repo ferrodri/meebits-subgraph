@@ -9,8 +9,7 @@ type Meebit @entity {
     id: ID!
 
     "How many autoglyphs the minter had when minting"
-    # TODO: frh -> make this two mandatory
-    autoglyphsOfMinter: BigInt
+    autoglyphsOfMinter: BigInt!
 
     "How many cryptopunks the minter had when minting. Not checking wrapped cryptopunks since you needed the actual punk when minting"
     cryptopunksOfMinter: BigInt!

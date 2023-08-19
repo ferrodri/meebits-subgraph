@@ -1,12 +1,13 @@
 import { Address } from '@graphprotocol/graph-ts';
-import {
-    CryptoPunksMarket
-} from '../generated/CryptoPunksMarket/CryptoPunksMarket';
+import { Autoglyphs } from '../generated/Meebits/Autoglyphs';
+import { CryptoPunksMarket } from '../generated/Meebits/CryptoPunksMarket';
 import { Mint } from '../generated/Meebits/Meebits';
 import { Account, Meebit } from '../generated/schema';
 
 
 export function handleMint(event: Mint): void {
+    const autoglyphsAddress = Address.fromString('0xd4e4078ca3495DE5B1d4dB434BEbc5a986197782');
+    const autoglyphsContract = Autoglyphs.bind(autoglyphsAddress);
     const cryptoPunksAddress = Address.fromString('0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB');
     const cryptopunksContract = CryptoPunksMarket.bind(cryptoPunksAddress);
 
@@ -21,6 +22,7 @@ export function handleMint(event: Mint): void {
 
     // Create meebit
     const meebit = new Meebit(event.params.index.toString());
+    meebit.autoglyphsOfMinter = autoglyphsContract.balanceOf(event.params.minter);
     meebit.cryptopunksOfMinter = cryptopunksContract.balanceOf(event.params.minter);
     meebit.minter = account.id;
     meebit.createdAtBlockNumber = event.block.number;
