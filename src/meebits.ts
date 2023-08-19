@@ -1,22 +1,30 @@
+import { Address } from '@graphprotocol/graph-ts';
+import {
+    CryptoPunksMarket
+} from '../generated/CryptoPunksMarket/CryptoPunksMarket';
 import { Mint } from '../generated/Meebits/Meebits';
 import { Account, Meebit } from '../generated/schema';
 
 
 export function handleMint(event: Mint): void {
+    const cryptoPunksAddress = Address.fromString('0xb47e3cd837dDF8e4c57F05d70Ab865de6e193BBB');
+    const cryptopunksContract = CryptoPunksMarket.bind(cryptoPunksAddress);
+
     const mintedVia = parseInt(event.params.createdVia.toString());
-    const accountId = event.params.minter.toHexString();
+    const accountAddress = event.params.minter.toHexString();
 
     // Look for existing account or create it
-    let account = Account.load(accountId);
+    let account = Account.load(accountAddress);
     if (!account) {
         account = new Account(event.params.minter.toHexString());
     }
 
     // Create meebit
     const meebit = new Meebit(event.params.index.toString());
+    meebit.cryptopunksOfMinter = cryptopunksContract.balanceOf(event.params.minter);
     meebit.minter = account.id;
-    meebit.blockNumber = event.block.number;
-    meebit.blockTimestamp = event.block.timestamp;
+    meebit.createdAtBlockNumber = event.block.number;
+    meebit.createdAtTimestamp = event.block.timestamp;
     meebit.transactionHash = event.transaction.hash;
 
     meebit.mintedVia =
@@ -28,54 +36,4 @@ export function handleMint(event: Mint): void {
 
     meebit.save();
     account.save();
-    //
-    // let contract = Contract.bind(event.address)
-    //
-    // The following functions can then be called on this contract to access
-    // state variables and other data:
-    //
-    // - contract.SALE_LIMIT(...)
-    // - contract.TOKEN_LIMIT(...)
-    // - contract.balanceOf(...)
-    // - contract.cancelledOffers(...)
-    // - contract.communityGrant(...)
-    // - contract.contentHash(...)
-    // - contract.contractSealed(...)
-    // - contract.creatorNftMints(...)
-    // - contract.ethBalance(...)
-    // - contract.getApproved(...)
-    // - contract.getPrice(...)
-    // - contract.hashToSign(...)
-    // - contract.isApprovedForAll(...)
-    // - contract.marketPaused(...)
-    // - contract.mintWithPunkOrGlyph(...)
-    // - contract.mintsRemaining(...)
-    // - contract.name(...)
-    // - contract.ownerOf(...)
-    // - contract.publicSale(...)
-    // - contract.saleDuration(...)
-    // - contract.saleStartTime(...)
-    // - contract.supportsInterface(...)
-    // - contract.symbol(...)
-    // - contract.tokenByIndex(...)
-    // - contract.tokenOfOwnerByIndex(...)
-    // - contract.tokenURI(...)
-    // - contract.totalSupply(...)
-    // - contract.tradeValid(...)
 }
-
-// export function handleApprovalForAll(event: ApprovalForAll): void { }
-
-// export function handleCommunityGrantEnds(event: CommunityGrantEnds): void { }
-
-// export function handleDeposit(event: Deposit): void { }
-
-// export function handleOfferCancelled(event: OfferCancelled): void { }
-
-// export function handleSaleBegins(event: SaleBegins): void { }
-
-// export function handleTrade(event: Trade): void { }
-
-// export function handleTransfer(event: Transfer): void { }
-
-// export function handleWithdraw(event: Withdraw): void { }

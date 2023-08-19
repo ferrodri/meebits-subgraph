@@ -8,14 +8,21 @@ type Meebit @entity {
     "The Meebit ERC721 token id"
     id: ID!
 
+    "How many autoglyphs the minter had when minting"
+    # TODO: frh -> make this two mandatory
+    autoglyphsOfMinter: BigInt
+
+    "How many cryptopunks the minter had when minting. Not checking wrapped cryptopunks since you needed the actual punk when minting"
+    cryptopunksOfMinter: BigInt!
+
     "The original minter of the Meebit"
     minter: Account!
 
     "How it was minted, through public sale, autoglyphs or cryptopunks"
     mintedVia: MintedVia!
 
-    blockNumber: BigInt!
-    blockTimestamp: BigInt!
+    createdAtBlockNumber: BigInt!
+    createdAtTimestamp: BigInt!
     transactionHash: Bytes!
 }
 
