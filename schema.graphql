@@ -11,7 +11,7 @@ type Meebit @entity {
     "The original minter of the Meebit"
     minter: Account!
 
-    "How it was minted, through public sale, dev mint, autoglyphs or cryptopunks"
+    "How it was minted, through public sale, autoglyphs or cryptopunks"
     mintedVia: MintedVia!
 
     blockNumber: BigInt!
